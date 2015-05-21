@@ -1,19 +1,23 @@
-/*
- * spa.js
- * Root namespace module
- */
+(function (global) {
+  "use strict";
 
-/* jshint
-   browser: true, continue: true, devel: true, indent: 4, maxerr: 50, 
-   newcap: true, nomen: true, plusplus: true, regexp: true, sloppy: true, 
-   vars: false, white: true
- */ 
-/* global $, spa */
+  /*
+   * spa.js
+   * Root namespace module
+   */
 
-var spa = (function () { 
-	var initModule = function ($container) { 
-		spa.shell.initModule($container);
-	};
+  /* jshint
+     browser: true, devel: true, indent: 2, maxerr: 50, 
+     newcap: true, nomen: true, plusplus: true, regexp: true, white: true
+   */
+  /* global $, spa */
 
-	return { initModule: initModule };
-}());
+  global.spa = (function () {
+    var initModule = function ($container) {
+        spa.shell.initModule($container);
+    };
+
+    return { initModule: initModule };
+  }());
+
+}(window));
