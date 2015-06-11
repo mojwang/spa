@@ -10,10 +10,6 @@
   overflow-y: auto; 
 }
 
-.alchemist-pipeline-progress-bars > div { 
-  max-height: inherit;
-}
-
 .alchemist-pipeline-progress-bars > a { display: block; }
 .alchemist-pipeline-progress-bar-container > table { width: 100%; }
 .alchemist-pipeline-progress-bar-container 
@@ -36,8 +32,6 @@
 }
 .alchemist-pipeline-progress-bar-pane { 
   display: none;
-  max-height: inherit;
-  overflow-y: auto;
   background-color: transparent;
   padding: 5px 5px 5px 10px;
 }

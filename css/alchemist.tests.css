@@ -4,6 +4,7 @@
   font-style: italic;
 }
 
+.alchemist-tests-pane > div:nth-child(2) { margin-bottom: 5px; }
 .alchemist-tests-pane progress { 
   width: 33%;
 }
@@ -17,7 +18,7 @@
 
 .alchemist-tests-pane li { 
   margin: 0;
-  padding: 0;
+  padding: 0 0 2px 0;
   margin-left: 15px;
   overflow: hidden
 }
@@ -33,7 +34,7 @@
   .alchemist-tests-pane li > h2.alchemist-tests-failed span:nth-child(1) { color: #b94a48; }
   
   .alchemist-tests-pane li > h2 span:nth-child(2) { 
-    font-size: 0.85em;
+    font-size: 0.75em;
     margin-left: 5px;
     padding: 2px 5px;
     color: #fff;
@@ -48,9 +49,7 @@
   padding: 0 5px 5px 5px;
   width: 100%; 
   word-wrap: break-word;
-  color: #c00;
-  max-height: 300px;
-  overflow:auto  
+  color: #c00;  
 }
 
 
