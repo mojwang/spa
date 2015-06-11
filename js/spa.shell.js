@@ -17,7 +17,7 @@
     var configMap = { 
       anchor_schema_map: { 
         chat: { 
-          open: true, 
+          opened: true, 
           closed: true
         }
       },
@@ -43,15 +43,13 @@
     };
 
     var stateMap = { 
-      $container: null,
-      anchor_map: {},
-      is_chat_retracted: true
+      anchor_map: {}
     };
 
     var jqueryMap = {};
-    var setJqueryMap, initModule, toggleChat;
+    var setJqueryMap, initModule;
     var onClickChat, onHashChange;
-    var copyAnchorMap, changeAnchorPart;
+    var copyAnchorMap, changeAnchorPart, setChatAnchor;
 
     //------------------- END MODULE SCOPE VARIABLES -----------------------
     //------------------- BEGIN UTILITY METHODS ----------------------------
@@ -104,57 +102,18 @@
     setJqueryMap = function () { 
       var $container = stateMap.$container;
       jqueryMap = { 
-        $container: $container,
-        $chat: $container.find('.spa-shell-chat') 
+        $container: $container
       };
-    };
-
-    toggleChat = function (do_extend, callback) { 
-      var px_chat_ht = jqueryMap.$chat.height();
-      var is_open = px_chat_ht === configMap.chat_extend_height;
-      var is_closed = px_chat_ht === configMap.chat_retract_height;
-      var is_sliding = !is_closed && !is_open;
-
-      // Avoid race condition
-      if (is_sliding) return false;
-
-      // Extend chat slider
-      if (do_extend) { 
-        jqueryMap.$chat.animate( 
-          { height: configMap.chat_extend_height },
-          configMap.chat_extend_time, 
-          function () {
-            jqueryMap.$chat.attr('title', configMap.chat_extended_title);
-            stateMap.is_chat_retracted = false;
-
-            if (callback) callback(jqueryMap.$chat); 
-          }
-        );
-
-        return true;
-      }
-
-      // Retract chat slider
-      jqueryMap.$chat.animate(
-        { height: configMap.chat_retract_height },
-        configMap.chat_retract_time,
-        function () {
-          jqueryMap.$chat.attr('title', configMap.chat_retracted_title);
-          stateMap.is_chat_retracted = true;
-
-          if (callback) callback(jqueryMap.$chat); 
-        }
-      );
-
-      return true;
     };
 
     //------------------- END DOM METHODS ----------------------------------
     //------------------- BEGIN EVENT HANDLERS -----------------------------
 
     onHashChange = function (event) { 
-      var anchor_map_proposed, anchor_map_previous = copyAnchorMap(); 
-      var s_chat_proposed, _s_chat_previous, _s_chat_proposed;
+      var anchor_map_proposed
+      var anchor_map_previous = copyAnchorMap(); 
+      var s_chat_proposed, _s_chat_proposed, _s_chat_previous;
+      var is_ok = true;
 
       // Attempt to parse anchor
       try {
@@ -173,11 +132,11 @@
       if (!anchor_map_proposed || _s_chat_previous !== _s_chat_proposed) { 
         s_chat_proposed = anchor_map_proposed.chat;
         switch(s_chat_proposed) { 
-          case 'open':
-            toggleChat(true); 
+          case 'opened':
+            is_ok = global.spa.chat.setSliderPosition('opened');
             break;
           case 'closed':
-            toggleChat(false); 
+            is_ok = global.spa.chat.setSliderPosition('closed');
             break;
           default:
             toggleChat(false);
@@ -186,6 +145,17 @@
         }
       }
       // End adjust chat component 
+
+      if (!is_ok) { 
+        if (anchor_map_previous) { 
+          $.uriAnchor.setAnchor(anchor_map_previous, null, true);
+          stateMap.anchor_map = anchor_map_previous;
+        }
+        else { 
+          delete anchor_map_proposed.chat;
+          $.uriAnchor.setAnchor(anchor_map_proposed, null, true);
+        }
+      }
 
       return false;
     };
@@ -198,6 +168,13 @@
     };
 
     //------------------- END EVENT HANDLERS -------------------------------
+    //------------------- BEGIN CALLBACK METHODS ---------------------------
+    
+    setChatAnchor = function (position_type) { 
+      return changeAnchorPart({ chat: position_type });
+    };
+
+    //------------------- END CALLBACK METHODS -----------------------------
     //------------------- BEGIN PUBLIC METHODS -----------------------------
     initModule = function ($container) { 
       // load HTML and map jQuery collections
@@ -216,8 +193,13 @@
       });
 
       // Configure and initialize feature modules 
-      global.spa.chat.configModule({});
-      global.spa.chat.initModule(jqueryMap.$chat);
+      global.spa.chat.configModule({
+        set_chat_anchor: setChatAnchor, 
+        chat_model: global.spa.model.chat, 
+        people_model: global.spa.model.people
+      });
+
+      global.spa.chat.initModule(jqueryMap.$container);
 
       // Handle URI anchor change event
       // This is done after all feature modules are configured and 
