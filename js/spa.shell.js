@@ -110,7 +110,7 @@
     //------------------- BEGIN EVENT HANDLERS -----------------------------
 
     onHashChange = function (event) { 
-      var anchor_map_proposed
+      var anchor_map_proposed;
       var anchor_map_previous = copyAnchorMap(); 
       var s_chat_proposed, _s_chat_proposed, _s_chat_previous;
       var is_ok = true;

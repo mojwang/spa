@@ -18,14 +18,14 @@
       main_html : String() + 
           '<div class="spa-chat">' +
               '<div class="spa-chat-head">' +
-                '<div class="spa-chat-head-toggle">+</div>'
+                '<div class="spa-chat-head-toggle">+</div>' +
                 '<div class="spa-chat-head-title">' +
                   'Chat' +
                 '</div>' +
               '</div>' + 
               '<div class="spa-chat-closer">x</div>' +
               '<div class="spa-chat-sizer">' +
-                '<div class="spa-chat-msgs"></div>'
+                '<div class="spa-chat-msgs"></div>' +
                 '<div class="spa-chat-box">' +
                   '<input type="text" />' +
                   '<div>Send</div>' +
@@ -60,7 +60,7 @@
       $append_target: null,
       position_type: 'closed', 
       px_per_em: 0,
-      slider_hidden_px; 0,
+      slider_hidden_px: 0,
       slider_opened_px: 0,
       slider_closed_px: 0
     };
@@ -96,8 +96,8 @@
       };
     };
 
-    setPxSizes: function() { 
-      var px_per_em = getEmSize(jqueryMap.$slider.get(0)), 
+    setPxSizes = function() { 
+      var px_per_em = getEmSize(jqueryMap.$slider.get(0)); 
       var opened_height_em = configMap.slider_opened_em;
 
       stateMap.px_per_em = px_per_em;
@@ -121,18 +121,21 @@
           animate_time = configMap.slider_open_time;
           slider_title = configMap.slider_opened_title;
           toggle_text = '=';
+          break;
         case 'hidden':
           height_px = 0;
           animate_time = configMap.slider_open_time;
           slider_title = '';
           toggle_text = '+';
+          break;
         case 'closed':
           height_px = stateMap.slider_closed_px;
           animate_time = configMap.slider_close_time;
           slider_title = configMap.slider_closed_title;
           toggle_text = '+';
           break;
-        default: return false;=
+        default: 
+          return false;
       }
 
       stateMap.position_type = '';
@@ -164,7 +167,7 @@
       }
 
       return false;
-    }
+    };
     //------------------- END EVENT HANDLERS -------------------------------
 
     //------------------- BEGIN PUBLIC METHODS -----------------------------
