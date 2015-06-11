@@ -1,0 +1,87 @@
+
+.alchemist-shell-main-content > div:first-child { 
+  height: 40px;
+  padding: 5px; 
+}
+
+.alchemist-pipeline-progress-bars {
+  height: calc(100% - 40px);
+  max-height: calc(100% - 40px);
+  overflow-y: auto; 
+}
+
+.alchemist-pipeline-progress-bars > div { 
+  max-height: inherit;
+}
+
+.alchemist-pipeline-progress-bars > a { display: block; }
+.alchemist-pipeline-progress-bar-container > table { width: 100%; }
+.alchemist-pipeline-progress-bar-container 
+.alchemist-pipeline-progress-bar-label { 
+  width: 150px;
+  margin-right: 5px;
+}
+.alchemist-pipeline-progress-bar-container 
+.alchemist-pipeline-progress-bar-control { 
+  width: calc(100% - 150px); 
+}
+
+.alchemist-pipeline-progress-bar-label > label { padding-left: 5px; }
+
+.alchemist-pipeline-progress-bar-hover {
+  border: 1px solid #bbb;
+  border-radius: 2px;
+  box-shadow: -20px -10px 50px #777 inset;
+  
+}
+.alchemist-pipeline-progress-bar-pane { 
+  display: none;
+  max-height: inherit;
+  overflow-y: auto;
+  background-color: transparent;
+  padding: 5px 5px 5px 10px;
+}
+
+.alchemist-pipeline-progress-bar-pane table { width: 100%; }
+.alchemist-pipeline-progress-bar-pane h1 { 
+  font-size: 1.25em; 
+  border-bottom: 1px solid #888;
+}
+
+.alchemist-pipeline-progress-bar-pane > div:nth-child(2) { 
+  background-color: transparent;
+  margin-bottom: 10px;
+}
+
+progress { width: 100%; }
+progress:not([value]) {
+  /* Styling here */
+}
+
+progress[value] {
+  /* Reset the default appearance */
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  
+  padding: 5px;    
+  border: none;   /* Get rid of default border in Firefox. */
+  color: green;   /* For IE10 */
+}
+
+progress[value]::-webkit-progress-bar {
+  background-color: #eee;
+  border-radius: 2px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+}
+
+progress[value]::-webkit-progress-value, 
+progress[value]::-moz-progress-bar {
+  background-color: green;
+  border-radius: 2px; 
+  background-size: 35px 20px, 100% 100%, 100% 100%;
+}
+
+.alchemist-pipeline-progress-bar-control progress[value] { 
+  height: 20px;
+}

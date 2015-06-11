@@ -1,0 +1,77 @@
+.alchemist-shell-head, .alchemist-shell-head-logo, .alchemist-shell-head-acct,
+.alchemist-shell-head-search, .alchemist-shell-main, .alchemist-shell-main-nav, 
+.alchemist-shell-main-content, .alchemist-shell-foot, .alchemist-shell-modal { 
+    position: absolute;
+}
+.alchemist-shell-head { 
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+}
+.alchemist-shell-head-logo {
+    top: 4px;
+    left: 4px;
+    height: 32px;
+    width: 128px;
+    background: orange;
+}
+.alchemist-shell-head-acct { 
+    top: 4px;
+    right: 0;
+    width: 64px;
+    height: 32px;
+    background: green;
+}
+.alchemist-shell-head-search { 
+    top: 4px;
+    right: 64px;
+    width: 248px;
+    height: 32px;
+    background: blue;
+}
+.alchemist-shell-main { 
+  top: 40px;
+  left: 0;
+  bottom: 40px;
+  right: 0;
+}
+.alchemist-shell-main-content, .alchemist-shell-main-nav { 
+  top: 0;
+  bottom: 0;
+}
+.alchemist-shell-main-nav { 
+  width: 250px;
+  background: #eee;
+}
+    .alchemist-x-closed .alchemist-shell-main-nav { 
+      width: 0;
+    }
+.alchemist-shell-main-content {
+  left: 250px;
+  right: 0;
+  background: #ddd;
+  padding: 5px;
+}
+    .alchemist-x-closed .alchemist-shell-main-content {
+      left: 0;
+    }
+.alchemist-shell-foot {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 40px;
+}
+
+.alchemist-shell-modal {
+  display: none;
+  margin-top: -200px;
+  margin-left: -200px;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  height: 400px;
+  background: #fff;
+  border-radius: 3px;
+  z-index: 2;
+}

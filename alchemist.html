@@ -1,0 +1,318 @@
+<!doctype html>
+<html>
+  <head>
+    <!-- IE9+ redering support for latest standards -->
+    <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Alchemist</title>
+
+    <!-- Third-party Stylesheets -->
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/alchemist.css" type="text/css"/>
+    <link rel="stylesheet" href="css/alchemist.shell.css" type="text/css"/>
+    <link rel="stylesheet" href="css/alchemist.pipeline.css" type="text/css"/>
+    <link rel="stylesheet" href="css/alchemist.tests.css" type="text/css"/>
+
+    <!-- Third-party JavaScript -->
+    <script type="text/javascript" src="js/jq/jquery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/jq/jquery.uriAnchor-1.2.1.js"></script>
+
+    <!-- JavaScript
+    <script type="text/javascript" src="js/spa.js"></script>
+    <script type="text/javascript" src="js/spa.util.js"></script>
+    <script type="text/javascript" src="js/spa.model.js"></script>
+    <script type="text/javascript" src="js/spa.shell.js"></script>
+    -->
+    <script>
+      $(document).ready(function() {
+        function generateRandomNumber(min, max) { return Math.floor(Math.random() * (max - min)) + min; }
+
+        var _html = 
+          '<div>' + 
+          '  <label>Branches:' + 
+          '    <select id="dd-cadmium-branches">' +
+          '      <option value="master">master</option>' +
+          '      <option value="release">release</option>' +
+          '      <option value="bladerunner-master">bladerunner-master</option>' +
+          '      <option value="bladerunner-release">bladerunner-release</option>' +
+          '    </select>' +
+          '  </label>' +
+          '  <label>Devices: ' +
+          '    <select id="dd-cadmium-device">' +
+          '      <option value="chrome">Chrome</option>' +
+          '      <option value="msie">Internet Explorer</option>' +
+          '      <option value="safari">Safari</option>' +
+          '      <option value="firefox">Firefox</option>' +
+          '    </select>' +
+          '  </label>' +  
+          '</div>';
+
+        
+
+
+
+        var slowThreshold = 10000;
+        var min = 5, max = 100;
+
+        var errorMessage = "AssertionError: expected Cadmium UI to not have error message displayed, but got:\n" +
+"    Whoops, something went wrong...\n    Streaming Error\n    This title is not available to watch instantly. Please try another title.\n    Error Code: F7111-1331-2206\n" +
+"        at null. (C:\\hudson\\workspace\\FUNCTIONAL-FIREFOX-WINDOWS-MASTER\\alchemist\\libs\\platforms\\pages\\netflix\\merchweb\\page-player\\page-player-assertions.js:56:8)\n" +
+"        at Object.defineProperty.get (C:\\hudson\\workspace\\FUNCTIONAL-FIREFOX-WINDOWS-MASTER\\alchemist\\node_modules\\chai\\lib\\chai\\utils\\addProperty.js:35:29)\n" +
+"        at doAsserterAsyncAndAddThen (C:\\hudson\\workspace\\FUNCTIONAL-FIREFOX-WINDOWS-MASTER\\alchemist\\node_modules\\chai-as-promised\\lib\\chai-as-promised.js:292:33)\n" +
+"        at null. (C:\\hudson\\workspace\\FUNCTIONAL-FIREFOX-WINDOWS-MASTER\\alchemist\\node_modules\\chai-as-promised\\lib\\chai-as-promised.js:282:25)\n" +
+"        at Object.defineProperty.get (C:\\hudson\\workspace\\FUNCTIONAL-FIREFOX-WINDOWS-MASTER\\alchemist\\node_modules\\chai\\lib\\chai\\utils\\overwriteProperty.js:49:37)\n" +
+"        at C:\\hudson\\workspace\\FUNCTIONAL-FIREFOX-WINDOWS-MASTER\\alchemist\\components\\test\\tests\\automated\\system\\functional\\cadmium-player-controls-episodic.js:371:62\n" +
+"    From previous event:\n" +
+"        at Context. (C:\\hudson\\workspace\\FUNCTIONAL-FIREFOX-WINDOWS-MASTER\\alchemist\\components\\test\\tests\\automated\\system\\functional\\cadmium-player-controls-episodic.js:378:18)\n" +
+"        at callFn (C:\\hudson\\workspace\\FUNCTIONAL-FIREFOX-WINDOWS-MASTER\\alchemist\\node_modules\\mocha\\lib\\runnable.js:266:21)\n" +
+"        at Test.Runnable.run (C:\\hudson\\workspace\\FUNCTIONAL-FIREFOX-WINDOWS-MASTER\\alchemist\\node_modules\\mocha\\lib\\runnable.js:259:7)\n" +
+"        at Runner.runTest (C:\\hudson\\workspace\\FUNCTIONAL-FIREFOX-WINDOWS-MASTER\\alchemist\\node_modules\\mocha\\lib\\runner.js:390:10)\n" +
+"        at C:\\hudson\\workspace\\FUNCTIONAL-FIREFOX-WINDOWS-MASTER\\alchemist\\node_modules\\mocha\\lib\\runner.js:473:12\n" +
+"        at next (C:\\hudson\\workspace\\FUNCTIONAL-FIREFOX-WINDOWS-MASTER\\alchemist\\node_modules\\mocha\\lib\\runner.js:315:14)\n" +
+"        at C:\\hudson\\workspace\\FUNCTIONAL-FIREFOX-WINDOWS-MASTER\\alchemist\\node_modules\\mocha\\lib\\runner.js:325:7\n" +
+"        at next (C:\\hudson\\workspace\\FUNCTIONAL-FIREFOX-WINDOWS-MASTER\\alchemist\\node_modules\\mocha\\lib\\runner.js:260:23)";
+
+        var tests = [
+          { name: 'should have title', duration: generateRandomNumber(2, 15000) },
+          { name: 'should not have a next episode preview', duration: generateRandomNumber(2, 15000) },
+          { name: 'should have an audio/subtitle selector', duration: generateRandomNumber(2, 15000) },
+          { name: 'should not be in fill mode', duration: generateRandomNumber(2, 15000), error: errorMessage },
+          { name: 'should not have next episode preview for last episode in the series', duration: generateRandomNumber(2, 15000) },
+          { name: 'should mute and unmute audio', duration: generateRandomNumber(2, 15000) },
+          { name: 'should pause and resume playback', duration: generateRandomNumber(2, 15000) },
+          { name: 'should navigate to browse screen from movie post play screen (originals)', duration: generateRandomNumber(2, 15000) },
+          { name: 'should play successfully after refreshing player page multiple times', duration: generateRandomNumber(2, 15000) },
+          { name: 'should switch episode via episode selector', duration: generateRandomNumber(2, 15000) },
+          { name: 'should preserve bookmarks during playback', duration: generateRandomNumber(2, 15000) },
+        ];
+
+        _html += '<div class="alchemist-pipeline-progress-bars">';
+        _html += [
+          '2.0001.001.011',
+          '2.0001.002.011',
+          '2.0001.003.011',
+          '2.0001.004.011',
+          '2.0001.005.011',
+          '2.0001.006.011',
+          '2.0001.007.011',
+          '2.0001.008.011',
+          '2.0001.009.011',
+          '2.0001.010.011',
+          '2.0001.011.011',
+          '2.0001.012.011',
+          '2.0001.013.011',
+          '2.0001.014.011',
+          '2.0001.015.011',
+          '2.0001.016.011',
+          '2.0001.017.011',
+          '2.0001.018.011',
+          '2.0001.019.011',
+          '2.0001.020.011',
+          '2.0001.021.011'
+        ]
+        .map(function (build) {
+          var progress = generateRandomNumber(min, max);
+
+          htmlFragment = '' + 
+            '<div>' +
+            '  <div class="alchemist-pipeline-progress-bar-container">' +
+            '    <table>' +
+            '      <tbody>' +
+            '      <tr>' +
+            '        <td class="alchemist-pipeline-progress-bar-label">' +
+            '          <label>' + build + '&nbsp;<span style="font-size: 1.1em">(' + progress + '%)</span>:' +
+            '          </label>' +
+            '        </td>' +
+            '        <td class="alchemist-pipeline-progress-bar-control">' + 
+            '          <progress max="' + max + '" value="' + progress + '"></progress>' + 
+            '        </td>' +
+            '      </tr>' +
+            '      </tbody>' +
+            '    </table>' +
+            '  </div>' +
+            '  <div class="alchemist-pipeline-progress-bar-pane">' +
+            '    <div>' +
+            '      <h1>Builds</h1>' +
+            '      <div class="alchemist-builds-pane" style="display:none; height: 250px;"></div>' +
+            '    </div>' +
+            '    <div>' +
+            '      <h1>Tests</h1>' +
+            '      <div class="alchemist-tests-pane" style="display: none;">' +
+            '        <div>' +
+            '        <table>' +
+            '          <tbody>' +
+            '          <tr>' +
+            '            <td class="alchemist-tests-label"><label>Unit</label></td>' +
+            '            <td>' +
+            '              <progress max="100" value="33"></progress>' +
+            '            </td>' +
+            '          </tr>' +
+            '          </tbody>' +
+            '        </table>' +
+            '        </div>' +
+            '        <div style="display:none">' +
+            '          <ul>';
+
+            htmlFragment += tests.map(function (test) { 
+              var cssClasses = [
+                !!test.error ? 'alchemist-tests-failed' : 'alchemist-tests-passed'
+              ];
+            
+              var testSpeed = test.duration > slowThreshold
+                ? 'alchemist-tests-slow'
+                : test.duration > (slowThreshold / 2)
+                  ? 'alchemist-tests-medium'
+                  : 'alchemist-tests-fast';
+
+              cssClasses.push(testSpeed);
+
+              var str = '' +
+                '<li>' +
+                '  <h2 class="' + cssClasses.join(' ') + '">' +
+                '    <span>' + (!!test.error ? '&#10006' : '&#10004') + '</span>' + test.name;
+
+              str += !test.error ? 
+                ('<span>' + test.duration + 'ms</span>') : 
+                ('<pre><code>' + test.error + '</code></pre>');
+
+              str += '</h2></li>'; 
+
+              return str;
+            })
+            .join('');
+
+            htmlFragment += '' + 
+            '          </ul>' +
+            '        </div>' +
+
+            '        <div>' +
+            '        <table>' +
+            '          <tbody>' +
+            '          <tr>' +
+            '            <td class="alchemist-tests-label"><label>Functional</label></td>' +
+            '            <td>' +
+            '              <progress max="100" value="66"></progress>' +
+            '            </td>' +
+            '          </tr>' +
+            '          </tbody>' +
+            '        </table>' +
+            '        </div>' +
+            '        <div style="display:none;"></div>' +
+
+            '        <div>' +
+            '        <table>' +
+            '          <tbody>' +
+            '          <tr>' +
+            '            <td class="alchemist-tests-label"><label>Performance</label></td>' +
+            '            <td>' +
+            '              <progress max="100" value="50"></progress>' +
+            '            </td>' +
+            '          </tr>' +
+            '          </tbody>' +
+            '        </table>' +
+            '        </div>' +
+            '        <div style="display:none;"></div>' +
+
+            '      </div>' +
+            '    </div>' +
+            '    <div>' +
+            '      <h1>Deployments</h1>' +
+            '      <div class="alchemist-deployments-pane" style="display: none; height: 250px;"></div>' +
+            '    </div>' +
+            '    <div>' +
+            '      <h1>Canary Analysis</h1>' +
+            '      <div class="alchemist-aca-pane" style="display: none; height: 250px;"></div>' +
+            '    </div>' +
+            '  </div>' +
+            '</div>';
+
+            return htmlFragment;
+        })
+        .join('');
+
+        _html += '</div>';
+          
+        $('.alchemist-shell-main-content').append(_html);
+
+        // Highlight the progress bar container upon hovering
+        $('.alchemist-pipeline-progress-bar-container').hover(function () {
+          var target = this;
+
+          $('.alchemist-pipeline-progress-bar-container')
+            .filter(function (idx, element) { return !$(target).is(element); })
+            .each(function () { $(this).removeClass('alchemist-pipeline-progress-bar-hover'); });
+
+          $(this).toggleClass('alchemist-pipeline-progress-bar-hover');  
+        });
+
+        // Toggle progress bar panes
+        $('.alchemist-pipeline-progress-bars > div').click(function (e) {
+          var target = this;
+          var container = $('.alchemist-pipeline-progress-bars');
+
+          $('.alchemist-pipeline-progress-bars > div')
+            .filter(function (idx, element) { return !$(target).is(element); })
+            .each(function () { $(this).children('.alchemist-pipeline-progress-bar-pane').hide(); });
+
+          $(this).children('.alchemist-pipeline-progress-bar-pane').toggle();
+
+          // Scroll target element into view
+          var pos = $(target).offset().top - container.offset().top + container.scrollTop();
+          container.animate({ scrollTop: pos });
+        });
+
+        // Toggle pipeline panes
+        $('.alchemist-pipeline-progress-bar-pane > div').click(function (e) {
+          var target = this;
+          var container = $('.alchemist-pipeline-progress-bar-pane');
+
+          $('.alchemist-pipeline-progress-bar-pane > div')
+            .filter(function (idx, element) { return !$(target).is(element); })
+            .each(function () { $(this).children('div').hide(); });
+
+          $(this).children('div').toggle();
+          e.stopPropagation();
+
+        });
+
+        // Toggle test panes
+        $('.alchemist-tests-pane > div:first-child').click(function (e) {
+          var target = this;
+          var container = $('.alchemist-tests-pane');
+
+          $('.alchemist-tests-pane > div:first-child')
+            .filter(function (idx, element) { return !$(target).is(element); })
+            .each(function () { 
+              $(this).next('div').hide();
+              $(this).find('progress').show(); 
+
+            });
+
+          $(this).next('div').toggle();
+          $(this).find('progress').toggle();
+
+          e.stopPropagation();
+          
+        });
+      });
+    </script>
+  </head>
+  <body>
+    <div id="alchemist">
+        <div class="alchemist-shell-head">
+          <div class="alchemist-shell-head-logo"></div>
+          <div class="alchemist-shell-head-acct"></div>
+          <div class="alchemist-shell-head-search"></div>
+        </div>
+        <div class="alchemist-shell-main alchemist-x-closed">
+          <div class="alchemist-shell-main-nav"></div>
+          <div class="alchemist-shell-main-content"></div>
+        </div>
+        <div class="alchemist-shell-foot"></div>
+        <div class="alchemist-shell-modal"></div>
+    </div>
+  </body>
+</html>

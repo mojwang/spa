@@ -1,0 +1,56 @@
+.alchemist-tests-pane .alchemist-tests-label { 
+  width: 100px;
+  font-size: 1.1em;
+  font-style: italic;
+}
+
+.alchemist-tests-pane progress { 
+  width: 33%;
+}
+
+
+.alchemist-tests-pane ul { 
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.alchemist-tests-pane li { 
+  margin: 0;
+  padding: 0;
+  margin-left: 15px;
+  overflow: hidden
+}
+
+.alchemist-tests-pane li > h2 { 
+  margin: 0;
+  font-size: 13px; 
+  font-weight: normal;
+}
+
+  .alchemist-tests-pane li > h2 span:nth-child(1) { margin-right: 5px; }
+  .alchemist-tests-pane li > h2.alchemist-tests-passed span:nth-child(1) { color: #009900; }
+  .alchemist-tests-pane li > h2.alchemist-tests-failed span:nth-child(1) { color: #b94a48; }
+  
+  .alchemist-tests-pane li > h2 span:nth-child(2) { 
+    font-size: 0.85em;
+    margin-left: 5px;
+    padding: 2px 5px;
+    color: #fff;
+    border-radius: 5px;
+  }
+  .alchemist-tests-pane li > h2.alchemist-tests-slow span:nth-child(2) { background: #009900; }
+  .alchemist-tests-pane li > h2.alchemist-tests-medium span:nth-child(2) { background: #c09853; }
+  .alchemist-tests-pane li > h2.alchemist-tests-fast span:nth-child(2) { background: #b94a48; }
+
+.alchemist-tests-pane li pre { 
+  margin: 5px 0 10px 0;
+  padding: 0 5px 5px 5px;
+  width: 100%; 
+  word-wrap: break-word;
+  color: #c00;
+  max-height: 300px;
+  overflow:auto  
+}
+
+
