@@ -4,45 +4,46 @@
   padding: 5px; 
 }
 
-.alchemist-pipeline-progress-bars {
+.alchemist-pipelines {
   height: calc(100% - 40px);
   max-height: calc(100% - 40px);
   overflow-y: auto; 
 }
+  .alchemist-pipelines > a { display: block; }
 
-.alchemist-pipeline-progress-bars > a { display: block; }
-.alchemist-pipeline-progress-bar-container > table { width: 100%; }
-.alchemist-pipeline-progress-bar-container 
-.alchemist-pipeline-progress-bar-label { 
+.alchemist-pipeline-container:hover { 
+  border: 1px solid #bbb;
+  border-radius: 2px;
+  box-shadow: -20px -10px 50px #777 inset; 
+}
+
+.alchemist-pipeline-container > table { width: 100%; }
+.alchemist-pipeline-container .alchemist-pipeline-status { width: 12px; }
+.alchemist-pipeline-container .alchemist-pipeline-label { 
   width: 150px;
   margin-right: 5px;
 }
-.alchemist-pipeline-progress-bar-container 
-.alchemist-pipeline-progress-bar-control { 
-  width: calc(100% - 150px); 
-}
+.alchemist-pipeline-container .alchemist-pipeline-progress { width: calc(100% - 150px); }
 
-.alchemist-pipeline-progress-bar-label > label { padding-left: 5px; }
+.alchemist-pipeline-status > span { color: #009900; }
+.alchemist-pipeline-status.alchemist-pipeline-error > span { color: #b94a48; }
 
-.alchemist-pipeline-progress-bar-hover {
-  border: 1px solid #bbb;
-  border-radius: 2px;
-  box-shadow: -20px -10px 50px #777 inset;
-  
-}
-.alchemist-pipeline-progress-bar-pane { 
+.alchemist-pipeline-label > label { padding-left: 5px; }
+
+.alchemist-pipeline-pane { 
   display: none;
   background-color: transparent;
   padding: 5px 5px 5px 10px;
 }
 
-.alchemist-pipeline-progress-bar-pane table { width: 100%; }
-.alchemist-pipeline-progress-bar-pane h1 { 
+.alchemist-pipeline-pane table { width: 100%; }
+.alchemist-pipeline-pane h1 { 
   font-size: 1.25em; 
   border-bottom: 1px solid #888;
+  cursor: pointer;
 }
 
-.alchemist-pipeline-progress-bar-pane > div:nth-child(2) { 
+.alchemist-pipeline-pane > div:nth-child(2) { 
   background-color: transparent;
   margin-bottom: 10px;
 }
@@ -76,6 +77,12 @@ progress[value]::-moz-progress-bar {
   background-size: 35px 20px, 100% 100%, 100% 100%;
 }
 
-.alchemist-pipeline-progress-bar-control progress[value] { 
+.alchemist-pipeline-progress progress[value] { 
   height: 20px;
+}
+
+.alchemist-pipeline-inactive progress[value]::-webkit-progress-value { 
+  opacity: 0.25;
+  filter: alpha(opacity=25); /* For IE8 and earlier */
+  background-color: black;
 }

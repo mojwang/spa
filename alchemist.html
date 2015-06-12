@@ -28,7 +28,61 @@
     -->
     <script>
       $(document).ready(function() {
-        function generateRandomNumber(min, max) { return Math.floor(Math.random() * (max - min)) + min; }
+        function generateRandomNumber(min, max) { 
+          return Math.floor(Math.random() * (max - min)) + min; 
+        }
+
+        function generateTests(header, tests) { 
+          var htmlFragment = '' + 
+            '<div>' +
+            '  <table>' +
+            '    <tbody>' +
+            '    <tr>' +
+            '      <td class="alchemist-tests-label"><label>' + header + '</label></td>' +
+            '      <td>' +
+            '        <progress max="100" value="33"></progress>' +
+            '      </td>' +
+            '    </tr>' +
+            '    </tbody>' +
+            '  </table>' +
+            '</div>' +
+            '<div style="display:none">' +
+            '  <ul>';
+
+          htmlFragment += tests.map(function (test) { 
+              var cssClasses = [
+                !!test.error ? 'alchemist-tests-failed' : 'alchemist-tests-passed'
+              ];
+            
+              var testSpeed = test.duration > slowThreshold
+                ? 'alchemist-tests-slow'
+                : test.duration > (slowThreshold / 2)
+                  ? 'alchemist-tests-medium'
+                  : 'alchemist-tests-fast';
+
+              cssClasses.push(testSpeed);
+
+              var str = '' +
+                '<li>' +
+                '  <h2 class="' + cssClasses.join(' ') + '"><div>' +
+                '    <span>' + (!!test.error ? '&#10006' : '&#10004') + '</span>' + test.name;
+
+              str += !test.error ? 
+                ('<span>' + test.duration + 'ms</span></div>') : 
+                ('</div><pre style="display:none;"><code>' + test.error + '</code></pre>');
+
+              str += '</h2></li>'; 
+
+              return str;
+            })
+            .join('');
+
+            htmlFragment += '' + 
+              '  </ul>' +
+              '</div>';
+
+            return htmlFragment;
+        }
 
         var _html = 
           '<div>' + 
@@ -49,10 +103,6 @@
           '    </select>' +
           '  </label>' +  
           '</div>';
-
-        
-
-
 
         var slowThreshold = 10000;
         var min = 5, max = 100;
@@ -89,7 +139,7 @@
           { name: 'should preserve bookmarks during playback', duration: generateRandomNumber(2, 15000) },
         ];
 
-        _html += '<div class="alchemist-pipeline-progress-bars">';
+        _html += '<div class="alchemist-pipelines">';
         _html += [
           '2.0001.001.011',
           '2.0001.002.011',
@@ -113,109 +163,46 @@
           '2.0001.020.011',
           '2.0001.021.011'
         ]
-        .map(function (build) {
-          var progress = generateRandomNumber(min, max);
+        .map(function (build, idx, array) {
+          var progress = generateRandomNumber(min, max + 1);
+          var isPipelineInactive = idx > (array.length / 4);
+          var isPipelineError = !generateRandomNumber(0, 10);
+
+          var pipelineStatus = isPipelineError ? '&#10006' : '&#10004';
+          var pipelineErrorCssClass = isPipelineError ? 'alchemist-pipeline-error' : '';
+          var pipelineInactiveCssClass = isPipelineInactive ? 'alchemist-pipeline-inactive' : '';
 
           htmlFragment = '' + 
             '<div>' +
-            '  <div class="alchemist-pipeline-progress-bar-container">' +
+            '  <div class="alchemist-pipeline-container">' +
             '    <table>' +
             '      <tbody>' +
             '      <tr>' +
-            '        <td class="alchemist-pipeline-progress-bar-label">' +
+            '        <td class="alchemist-pipeline-status ' + pipelineErrorCssClass + '">' + 
+            '          <span ' + (isPipelineInactive ? '' : 'style="display: none;"') + '>' + pipelineStatus + '</span>' + 
+            '        </td>' + 
+            '        <td class="alchemist-pipeline-label">' +
             '          <label>' + build + '&nbsp;<span style="font-size: 1.1em">(' + progress + '%)</span>:' +
             '          </label>' +
             '        </td>' +
-            '        <td class="alchemist-pipeline-progress-bar-control">' + 
+            '        <td class="alchemist-pipeline-progress ' + pipelineInactiveCssClass + '">' + 
             '          <progress max="' + max + '" value="' + progress + '"></progress>' + 
             '        </td>' +
             '      </tr>' +
             '      </tbody>' +
             '    </table>' +
             '  </div>' +
-            '  <div class="alchemist-pipeline-progress-bar-pane">' +
+            '  <div class="alchemist-pipeline-pane">' +
             '    <div>' +
             '      <h1>Builds</h1>' +
             '      <div class="alchemist-builds-pane" style="display:none; height: 250px;"></div>' +
             '    </div>' +
             '    <div>' +
             '      <h1>Tests</h1>' +
-            '      <div class="alchemist-tests-pane" style="display: none;">' +
-            '        <div>' +
-            '        <table>' +
-            '          <tbody>' +
-            '          <tr>' +
-            '            <td class="alchemist-tests-label"><label>Unit</label></td>' +
-            '            <td>' +
-            '              <progress max="100" value="33"></progress>' +
-            '            </td>' +
-            '          </tr>' +
-            '          </tbody>' +
-            '        </table>' +
-            '        </div>' +
-            '        <div style="display:none">' +
-            '          <ul>';
-
-            htmlFragment += tests.map(function (test) { 
-              var cssClasses = [
-                !!test.error ? 'alchemist-tests-failed' : 'alchemist-tests-passed'
-              ];
-            
-              var testSpeed = test.duration > slowThreshold
-                ? 'alchemist-tests-slow'
-                : test.duration > (slowThreshold / 2)
-                  ? 'alchemist-tests-medium'
-                  : 'alchemist-tests-fast';
-
-              cssClasses.push(testSpeed);
-
-              var str = '' +
-                '<li>' +
-                '  <h2 class="' + cssClasses.join(' ') + '">' +
-                '    <span>' + (!!test.error ? '&#10006' : '&#10004') + '</span>' + test.name;
-
-              str += !test.error ? 
-                ('<span>' + test.duration + 'ms</span>') : 
-                ('<pre><code>' + test.error + '</code></pre>');
-
-              str += '</h2></li>'; 
-
-              return str;
-            })
-            .join('');
-
-            htmlFragment += '' + 
-            '          </ul>' +
-            '        </div>' +
-
-            '        <div>' +
-            '        <table>' +
-            '          <tbody>' +
-            '          <tr>' +
-            '            <td class="alchemist-tests-label"><label>Functional</label></td>' +
-            '            <td>' +
-            '              <progress max="100" value="66"></progress>' +
-            '            </td>' +
-            '          </tr>' +
-            '          </tbody>' +
-            '        </table>' +
-            '        </div>' +
-            '        <div style="display:none;"></div>' +
-
-            '        <div>' +
-            '        <table>' +
-            '          <tbody>' +
-            '          <tr>' +
-            '            <td class="alchemist-tests-label"><label>Performance</label></td>' +
-            '            <td>' +
-            '              <progress max="100" value="50"></progress>' +
-            '            </td>' +
-            '          </tr>' +
-            '          </tbody>' +
-            '        </table>' +
-            '        </div>' +
-            '        <div style="display:none;"></div>' +
-
+            '      <div class="alchemist-tests-pane" style="display: none;">' + 
+                     generateTests('Unit', tests) + 
+                     generateTests('Functional', tests) + 
+                     generateTests('Performance', tests) + 
             '      </div>' +
             '    </div>' +
             '    <div>' +
@@ -237,27 +224,19 @@
           
         $('.alchemist-shell-main-content').append(_html);
 
-        // Highlight the progress bar container upon hovering
-        $('.alchemist-pipeline-progress-bar-container').hover(function () {
-          var target = this;
-
-          $('.alchemist-pipeline-progress-bar-container')
-            .filter(function (idx, element) { return !$(target).is(element); })
-            .each(function () { $(this).removeClass('alchemist-pipeline-progress-bar-hover'); });
-
-          $(this).toggleClass('alchemist-pipeline-progress-bar-hover');  
-        });
-
         // Toggle progress bar panes
-        $('.alchemist-pipeline-progress-bars > div').click(function (e) {
+        $('.alchemist-pipelines > div').mousedown(function (e) {
+          
+          if (e.which === 3) return;
+
           var target = this;
-          var container = $('.alchemist-pipeline-progress-bars');
+          var container = $('.alchemist-pipelines');
 
-          $('.alchemist-pipeline-progress-bars > div')
+          $('.alchemist-pipelines > div')
             .filter(function (idx, element) { return !$(target).is(element); })
-            .each(function () { $(this).children('.alchemist-pipeline-progress-bar-pane').hide(); });
+            .each(function () { $(this).children('.alchemist-pipeline-pane').hide(); });
 
-          $(this).children('.alchemist-pipeline-progress-bar-pane').toggle();
+          $(this).children('.alchemist-pipeline-pane').toggle();
 
           // Scroll target element into view
           var pos = $(target).offset().top - container.offset().top + container.scrollTop();
@@ -265,11 +244,13 @@
         });
 
         // Toggle pipeline panes
-        $('.alchemist-pipeline-progress-bar-pane > div').click(function (e) {
-          var target = this;
-          var container = $('.alchemist-pipeline-progress-bar-pane');
+        $('.alchemist-pipeline-pane > div').mousedown(function (e) {
+          
+          if (e.which === 3) return true;
 
-          $('.alchemist-pipeline-progress-bar-pane > div')
+          var target = this;
+
+          $('.alchemist-pipeline-pane > div')
             .filter(function (idx, element) { return !$(target).is(element); })
             .each(function () { $(this).children('div').hide(); });
 
@@ -279,11 +260,13 @@
         });
 
         // Toggle test panes
-        $('.alchemist-tests-pane > div:first-child').click(function (e) {
-          var target = this;
-          var container = $('.alchemist-tests-pane');
+        $('.alchemist-tests-pane > div:nth-child(odd)').mousedown(function (e) {
 
-          $('.alchemist-tests-pane > div:first-child')
+          if (e.which === 3) return true;
+
+          var target = this;
+
+          $('.alchemist-tests-pane > div:nth-child(odd)')
             .filter(function (idx, element) { return !$(target).is(element); })
             .each(function () { 
               $(this).next('div').hide();
@@ -295,7 +278,16 @@
           $(this).find('progress').toggle();
 
           e.stopPropagation();
-          
+        });
+
+        // Toggle test error panes
+        $('.alchemist-tests-pane li > h2.alchemist-tests-failed').mousedown(function (e) { 
+          if (e.which === 3) return true;
+
+          var target = this;
+          $(target).children('pre').toggle();
+
+          e.stopPropagation();
         });
       });
     </script>
