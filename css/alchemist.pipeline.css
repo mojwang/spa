@@ -23,7 +23,9 @@
   width: 150px;
   margin-right: 5px;
 }
-.alchemist-pipeline-container .alchemist-pipeline-progress { width: calc(100% - 150px); }
+.alchemist-pipeline-container .alchemist-pipeline-progress { 
+  width: calc(100% - 150px); 
+}
 
 .alchemist-pipeline-status > span { color: #009900; }
 .alchemist-pipeline-status.alchemist-pipeline-error > span { color: #b94a48; }
@@ -64,25 +66,49 @@ progress[value] {
   color: green;   /* For IE10 */
 }
 
-progress[value]::-webkit-progress-bar {
+.alchemist-pipelines progress[value]::-webkit-progress-bar {
   background-color: #eee;
   border-radius: 2px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
 }
 
-progress[value]::-webkit-progress-value, 
-progress[value]::-moz-progress-bar {
-  background-color: green;
+progress[value]::-webkit-progress-value { 
+  background: green; 
   border-radius: 2px; 
-  background-size: 35px 20px, 100% 100%, 100% 100%;
+}
+progress[value]::-moz-progress-bar { 
+  background-color: green; 
+  border-radius: 2px; 
 }
 
-.alchemist-pipeline-progress progress[value] { 
-  height: 20px;
-}
+.alchemist-pipeline-progress progress[value] { height: 20px; }
+  .alchemist-pipeline-progress progress[value]::-webkit-progress-value { 
+
+    background-image: -webkit-linear-gradient(left, transparent, transparent);
+    background-image: -moz-linear-gradient(right, transparent, transparent);
+    background-image: -o-linear-gradient(right, transparent, transparent);
+    background-image: linear-gradient(to right, transparent, transparent);
+  }
+
+  .alchemist-pipeline-progress progress[value]::-moz-progress-bar { 
+  }
 
 .alchemist-pipeline-inactive progress[value]::-webkit-progress-value { 
   opacity: 0.25;
   filter: alpha(opacity=25); /* For IE8 and earlier */
   background-color: black;
+  background-image: -webkit-linear-gradient(left, transparent, transparent);
+  background-image: -moz-linear-gradient(right, transparent, transparent);
+  background-image: -o-linear-gradient(right, transparent, transparent);
+  background-image: linear-gradient(to right, transparent, transparent);
+}
+
+.alchemist-pipeline-inactive progress[value]::-moz-progress-bar { 
+  opacity: 0.25;
+  filter: alpha(opacity=25); /* For IE8 and earlier */
+  background-color: black;
+  background-image: -webkit-linear-gradient(left, transparent, transparent);
+  background-image: -moz-linear-gradient(right, transparent, transparent);
+  background-image: -o-linear-gradient(right, transparent, transparent);
+  background-image: linear-gradient(to right, transparent, transparent);
 }

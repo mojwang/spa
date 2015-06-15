@@ -17,8 +17,9 @@
     <link rel="stylesheet" href="css/alchemist.tests.css" type="text/css"/>
 
     <!-- Third-party JavaScript -->
-    <script type="text/javascript" src="js/jq/jquery-1.11.3.js"></script>
-    <script type="text/javascript" src="js/jq/jquery.uriAnchor-1.2.1.js"></script>
+    <script type="text/javascript" src="js/ext/jq/jquery-1.11.3.js"></script>
+    <script type="text/javascript" src="js/ext/jq/jquery.uriAnchor-1.2.1.js"></script>
+    <script type="text/javascript" src="js/ext/chart/chart-1.0.2.js"></script>
 
     <!-- JavaScript
     <script type="text/javascript" src="js/spa.js"></script>
@@ -139,6 +140,34 @@
           { name: 'should preserve bookmarks during playback', duration: generateRandomNumber(2, 15000) },
         ];
 
+        var canaryCharts = {};
+        var canaryChartOpts = {};
+
+        var canaryChartData = {
+          labels: [1, 2, 5, 10, 15, 20, 24, 36, 48],
+          datasets: [
+            {
+              label: "Canary Scores",
+              fillColor: "rgba(151,187,205,0.2)",
+              strokeColor: "rgba(151,187,205,1)",
+              pointColor: "rgba(151,187,205,1)",
+              pointStrokeColor: "#fff",
+              pointHighlightFill: "#fff",
+              pointHighlightStroke: "rgba(151,187,205,1)",
+              data: [10, 28, 42, 50, 68, 90, 96, 100, 100]
+            }
+          ]
+        };
+
+
+        Chart.defaults.global.responsive = true;
+        Chart.defaults.global.scaleBeginAtZero = true;
+        Chart.defaults.global.scaleLabel = "<%=value%>%";
+        Chart.defaults.global.tooltipTemplate = "<%if (label) {%><%=label%> hours: <%}%><%=value%>%",
+        Chart.defaults.global.scaleFontFamily = "'Trebuchet MS', Verdana, Helvetica, Arial, sans-serif";
+        Chart.defaults.global.tooltipFontFamily = "'Trebuchet MS', Verdana, Helvetica, Arial, sans-serif";
+        Chart.defaults.global.tooltipTitleFontFamily = "'Trebuchet MS', Verdana, Helvetica, Arial, sans-serif";
+
         _html += '<div class="alchemist-pipelines">';
         _html += [
           '2.0001.001.011',
@@ -207,11 +236,9 @@
             '    </div>' +
             '    <div>' +
             '      <h1>Deployments</h1>' +
-            '      <div class="alchemist-deployments-pane" style="display: none; height: 250px;"></div>' +
-            '    </div>' +
-            '    <div>' +
-            '      <h1>Canary Analysis</h1>' +
-            '      <div class="alchemist-aca-pane" style="display: none; height: 250px;"></div>' +
+            '      <div class="alchemist-deployments-pane" style="display: none;">' + 
+            '        <canvas id="canaryScoreGraph_' + build + '"></canvas>' + 
+            '      </div>' +
             '    </div>' +
             '  </div>' +
             '</div>';
@@ -223,7 +250,7 @@
         _html += '</div>';
           
         $('.alchemist-shell-main-content').append(_html);
-
+        
         // Toggle progress bar panes
         $('.alchemist-pipelines > div').mousedown(function (e) {
           
@@ -236,11 +263,11 @@
             .filter(function (idx, element) { return !$(target).is(element); })
             .each(function () { $(this).children('.alchemist-pipeline-pane').hide(); });
 
-          $(this).children('.alchemist-pipeline-pane').toggle();
-
-          // Scroll target element into view
-          var pos = $(target).offset().top - container.offset().top + container.scrollTop();
-          container.animate({ scrollTop: pos });
+          $(target).children('.alchemist-pipeline-pane').toggle('fast', function () { 
+            // Scroll target element into view
+            var pos = $(target).offset().top - container.offset().top + container.scrollTop();
+            container.animate({ scrollTop: pos });
+          });
         });
 
         // Toggle pipeline panes
@@ -254,9 +281,25 @@
             .filter(function (idx, element) { return !$(target).is(element); })
             .each(function () { $(this).children('div').hide(); });
 
-          $(this).children('div').toggle();
-          e.stopPropagation();
+          $(target).children('div').toggle('fast', function () {
+            var id, ctx, chart;
+            var canvasElement = $(target).find('.alchemist-deployments-pane canvas');
 
+            if (canvasElement.length) { 
+              id = canvasElement.attr('id');
+              chart = canaryCharts[id];
+
+              if (chart) {
+                // DO NOTHING: Chart is already generated
+              } 
+              else {
+                ctx = canvasElement.get(0).getContext('2d');
+                canaryCharts[id] = chart = new Chart(ctx, canaryChartOpts).Line(canaryChartData);  
+              }
+            } 
+          });
+          
+          e.stopPropagation();
         });
 
         // Toggle test panes
@@ -285,7 +328,7 @@
           if (e.which === 3) return true;
 
           var target = this;
-          $(target).children('pre').toggle();
+          $(target).children('pre').toggle('fast');
 
           e.stopPropagation();
         });

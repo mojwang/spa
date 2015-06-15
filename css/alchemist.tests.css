@@ -6,9 +6,14 @@
   .alchemist-tests-pane .alchemist-tests-label > label { cursor: pointer; }
 
 .alchemist-tests-pane > div:nth-child(2) { margin-bottom: 5px; }
+
 .alchemist-tests-pane progress { 
-  width: 33%;
+  width: 33%; 
+  height: 13px;
 }
+
+.alchemist-tests-pane progress[value]::-moz-progress-bar {   
+  }
 
 
 .alchemist-tests-pane ul { 
@@ -60,3 +65,7 @@
 }
 
 
+.alchemist-deployments-pane canvas { 
+  width:  100%;
+  height: 100%;
+}
